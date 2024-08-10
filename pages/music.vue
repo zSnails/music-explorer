@@ -1,29 +1,58 @@
 <template>
-    <section class="flex flex-row gap-2">
-        <div id="search" class="flex flex-col">
-            <UInput v-model="search" @change="debouncedSearch" placeholder="Enter a name..." />
-            <USelect></USelect>
+    <section class="flex flex-col gap-5 min-w-[1008px] w-full">
+        <div class="flex flex-col items-baseline">
+            <UInput class="w-full" size="xl" icon="i-heroicons-magnifying-glass-20-solid" v-model="search"
+                @change="debouncedSearch" placeholder="Enter a name..." :ui="{ icon: { trailing: { pointer: '' } } }">
+                <template #trailing>
+                    <UButton v-show="search !== ''" color="gray" variant="link" icon="i-heroicons-x-mark-20-solid"
+                        :padded="false" @click="search = ''" />
+                </template>
+            </UInput>
+            <UAccordion variant="link" class="flex-1" :items="[
+                {
+                    label: 'Filters',
+                    icon: 'i-heroicons-adjustments-horizontal',
+                    defaultOpen: false,
+                    slot: 'filters'
+                }
+            ]">
+                <template #filters>
+                    <div class="flex flex-row gap-2">
+                        <UInput @change="debouncedSearch" v-model="artist" placeholder="Artist..."></UInput>
+                        <UInput @change="debouncedSearch" v-model="album" placeholder="Album..."></UInput>
+                    </div>
+                </template>
+            </UAccordion>
         </div>
-        <div id="results">
-            <div class="grid grid-cols-2 gap-2">
-                <UCard v-for="(track, idx) in tracks?.items" :key="idx"
-                    class="shadow-xl hover:bg-slate-200 hover:animate-pulse min-w-[500px] max-w-[500px] h-fit max-h-[200px] w-full flex flex-col gap-6">
-                    <img :src="track.album.images[0].url" :alt="track.album.name" width="100" class="mb-2">
-                    <div>
-                        <h1 class="font-bold text-4xl text-ellipsis truncate">{{ track.name }}</h1>
-                        <div class="flex flex-row gap-2 text-ellipsis truncate">
-                            <h1 v-for="(artist, idx) in track.artists" :key="idx">
-                                <ULink :to="artist.external_urls.spotify">{{ artist.name }}</ULink>
-                            </h1>
+        <div class="grid grid-cols-2 gap-2">
+            <ClientOnly fallback-tag="span" fallback="Loading songs...">
+                <UCard v-for="(track, idx) in tracks?.items" :key="idx" as="a" target="_blank"
+                    :href="track.external_urls.spotify"
+                    class="shadow-xl hover:scale-105 hover:bg-slate-100 hover:animate-pulse min-w-[500px] max-w-[500px] h-fit max-h-[200px] w-full flex flex-col gap-6">
+                    <div class="flex flex-row justify-between">
+                        <img :src="track.album.images[0].url" :alt="track.album.name" width="100"
+                            class="mb-2 rounded-xl">
+                        <h1>{{ format(track.duration_ms, 'mm:ss') }}</h1>
+                    </div>
+                    <div class="flex flex-row justify-between items-baseline truncate text-ellipsis">
+                        <div class="flex flex-col">
+                            <h1 class="font-bold text-4xl">{{ track.name }}</h1>
+                            <div class="flex flex-row gap-2 overflow-hidden">
+                                <h1 v-for="(artist, idx) in track.artists" :key="idx">
+                                    <ULink :to="artist.external_urls.spotify">{{ artist.name }}</ULink>
+                                </h1>
+                            </div>
                         </div>
+                        <UIcon class="w-8 h-8" name="i-heroicons-arrow-top-right-on-square-20-solid"></UIcon>
                     </div>
                 </UCard>
-            </div>
+            </ClientOnly>
         </div>
     </section>
 </template>
 <script setup lang="ts">
 import { useStorage, useDebounceFn } from '@vueuse/core';
+import { format } from 'date-fns';
 
 interface ExternalUrls {
     spotify: string;
@@ -63,12 +92,30 @@ interface Response {
 };
 
 const search = ref<string>("");
+const album = ref<string>("");
+const artist = ref<string>("");
+
 const tracks = ref<Tracks>({ items: [] });
 const token = useStorage("access_token", "");
 
 const debouncedSearch = useDebounceFn(async () => {
-    const found = await loadTracks(search.value);
-    tracks.value = found;
+    let data = [search.value];
+
+    if (album.value !== "") {
+        data.push(`album:${encodeURIComponent(album.value)}`);
+    }
+
+    if (artist.value !== "") {
+        data.push(`artist:${encodeURIComponent(artist.value)}`);
+    }
+
+    const preQuery = data.filter((val) => val !== "").join(" ");
+    console.debug(preQuery);
+    const query = encodeURIComponent(preQuery);
+    if (query !== "") {
+        const found = await loadTracks(query);
+        tracks.value = found;
+    }
 }, 1000);
 
 async function loadTracks(query: string): Promise<Tracks> {
