@@ -2,7 +2,8 @@
     <section class="flex flex-col gap-5 min-w-[1008px] w-full">
         <div class="flex flex-col items-baseline">
             <UInput class="w-full" size="xl" icon="i-heroicons-magnifying-glass-20-solid" v-model="search"
-                @change="debouncedSearch" placeholder="Enter a name..." :ui="{ icon: { trailing: { pointer: '' } } }">
+                :loading="loading" @change="debouncedSearch" placeholder="Enter a name..."
+                :ui="{ icon: { trailing: { pointer: '' } } }">
                 <template #trailing>
                     <UButton v-show="search !== ''" color="gray" variant="link" icon="i-heroicons-x-mark-20-solid"
                         :padded="false" @click="search = ''" />
@@ -94,13 +95,13 @@ interface Response {
 const search = ref<string>("");
 const album = ref<string>("");
 const artist = ref<string>("");
+const loading = ref<boolean>(false);
 
 const tracks = ref<Tracks>({ items: [] });
 const token = useStorage("access_token", "");
 
 const debouncedSearch = useDebounceFn(async () => {
     let data = [search.value];
-
     if (album.value !== "") {
         data.push(`album:${encodeURIComponent(album.value)}`);
     }
@@ -113,8 +114,10 @@ const debouncedSearch = useDebounceFn(async () => {
     console.debug(preQuery);
     const query = encodeURIComponent(preQuery);
     if (query !== "") {
+        loading.value = true;
         const found = await loadTracks(query);
         tracks.value = found;
+        loading.value = false;
     }
 }, 1000);
 
@@ -131,7 +134,6 @@ async function loadTracks(query: string): Promise<Tracks> {
             offset: 0,
         },
     });
-
     return response.tracks
 }
 </script>
