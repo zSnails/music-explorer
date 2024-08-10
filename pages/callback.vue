@@ -6,7 +6,6 @@ const route = useRoute();
 const router = useRouter();
 async function getToken(code: string): Promise<void> {
     let codeVerifier = getData("code_verifier", false) as string;
-    console.log("codeVerifier", codeVerifier);
     const payload = {
         method: "POST",
         headers: {
@@ -23,8 +22,6 @@ async function getToken(code: string): Promise<void> {
 
     const body = await fetch("https://accounts.spotify.com/api/token", payload);
     const response = await body.json();
-    //localStorage.setItem("access_token", response.access_token);
-    console.log(response);
     setData("access_token", response.access_token, 3600, 's');
 }
 
