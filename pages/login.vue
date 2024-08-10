@@ -1,8 +1,6 @@
 <template></template>
 <script setup lang="ts">
 
-import { setData } from 'nuxt-storage/local-storage';
-
 function generateRandomString(length: number): string {
     const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const values = crypto.getRandomValues(new Uint8Array(length));
@@ -27,16 +25,14 @@ const codeVerifier = generateRandomString(64);
 const hashed = await sha256(codeVerifier);
 const codeChallenge = base64Encode(hashed);
 
-setData("code_verifier", codeVerifier);
+window.localStorage.setItem("code_verifier", codeVerifier);
 
 const authUrl = new URL("https://accounts.spotify.com/authorize");
 
 const config = useRuntimeConfig();
-
 const params: Record<string, string> = {
     response_type: 'code',
     client_id: config.public.CLIENT_ID || "",
-
     scope: "",
     code_challenge_method: 'S256',
     code_challenge: codeChallenge,

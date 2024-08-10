@@ -1,7 +1,12 @@
 <template>
     <div class="grid gap-8 min-h-[100dvh] grid-rows-[auto_1fr_auto]">
+<<<<<<< HEAD
         <header>
             <nav class="flex py-3 px-5 flex-row w-full h-fit justify-between bg-slate-100 shadow">
+=======
+        <header class="sticky top-0 z-50">
+            <!-- <nav class="flex min-h-[56px] py-3 px-5 flex-row w-full h-fit justify-between bg-slate-100 shadow">
+>>>>>>> impl-scrum-1
                 <div>
                     <ULink class="text-xl" to="/">Music Explorer</ULink>
                 </div>
@@ -11,9 +16,22 @@
                 <div>
                     <UButton v-if="!isLogged" to="/login">Login</UButton>
                 </div>
+<<<<<<< HEAD
             </nav>
         </header>
         <main class="mx-auto">
+=======
+            </nav> -->
+            <nav class="flex px-5 flex-row justify-between bg-slate-100 h-fit min-h-[56px] shadow">
+                <UHorizontalNavigation class="w-fit" :links="left" />
+                <ClientOnly>
+                    <UHorizontalNavigation class="w-fit" v-if="!isLogged" :links="right" />
+                </ClientOnly>
+            </nav>
+        </header>
+        <main class="mx-auto">
+            <NuxtLoadingIndicator></NuxtLoadingIndicator>
+>>>>>>> impl-scrum-1
             <NuxtPage />
         </main>
         <footer>
@@ -25,4 +43,28 @@
 import { useStorage } from "@vueuse/core";
 const token = useStorage("access_token", "");
 const isLogged = computed(() => token.value !== "");
+<<<<<<< HEAD
+=======
+
+const left = [
+    {
+        label: 'Music Explorer',
+        icon: 'i-heroicons-home',
+        to: '/'
+    },
+    {
+        label: 'Music',
+        icon: 'i-heroicons-musical-note',
+        to: '/music'
+    }
+];
+
+const right = [
+    {
+        label: 'Login',
+        icon: 'i-heroicons-user',
+        to: '/login'
+    }
+];
+>>>>>>> impl-scrum-1
 </script>
