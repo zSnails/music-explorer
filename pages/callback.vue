@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { setData, getData } from 'nuxt-storage/local-storage';
+import { useStorage } from '@vueuse/core';
+import { onBeforeMount } from 'vue';
 
 const config = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
-async function getToken(code: string): Promise<void> {
-    let codeVerifier = getData("code_verifier", false) as string;
+
+async function getToken(code: string): Promise<string> {
+    let codeVerifier = useStorage("code_verifier", "");
     const payload = {
         method: "POST",
         headers: {
@@ -16,15 +18,19 @@ async function getToken(code: string): Promise<void> {
             grant_type: "authorization_code",
             code,
             redirect_uri: config.public.CALLBACK_URL,
-            code_verifier: codeVerifier,
+            code_verifier: codeVerifier.value,
         }),
     };
 
     const body = await fetch("https://accounts.spotify.com/api/token", payload);
     const response = await body.json();
-    setData("access_token", response.access_token, 3600, 's');
+    return response.access_token;
 }
 
-await getToken(route.query.code as string);
-router.push('/');
+onBeforeMount(async () => {
+    const token = await getToken(route.query.code as string);
+    localStorage.setItem("access_token", token);
+    router.push('/');
+});
+
 </script>
