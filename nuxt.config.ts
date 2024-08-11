@@ -5,11 +5,9 @@ export default defineNuxtConfig({
     modules: ["@nuxt/ui"],
 
     runtimeConfig: {
-        // Make environment variables accessible here
         public: {
             CLIENT_ID: process.env.CLIENT_ID,
             CALLBACK_URL: process.env.CALLBACK_URL,
-            // Add more environment variables as needed
         }
     }
 });

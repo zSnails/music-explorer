@@ -11,8 +11,9 @@
   },
   "dependencies": {
     "@nuxt/ui": "^2.18.4",
+    "@vueuse/core": "^10.11.1",
+    "date-fns": "^3.6.0",
     "nuxt": "^3.12.4",
-    "nuxt-storage": "^1.2.2",
     "vue": "latest"
   },
   "devDependencies": {
