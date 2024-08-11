@@ -18,9 +18,15 @@
     </div>
 </template>
 <script setup lang="ts">
-import { useStorage } from "@vueuse/core";
-const token = useStorage("access_token", "");
-const isLogged = computed(() => token.value !== "");
+import { ofetch } from "ofetch";
+const isLogged = computed(() => !!token.value);
+const token = useCookie("access_token");
+
+globalThis.$fetch = ofetch.create({
+    headers: {
+        "Authorization": `Bearer ${token.value}`
+    }
+});
 
 const left = [
     {
@@ -29,19 +35,14 @@ const left = [
         to: '/'
     },
     {
-        label: 'Music',
-        icon: 'i-heroicons-musical-note',
-        to: '/music'
-    },
-    {
         label: 'Artists',
         icon: 'i-heroicons-user-group',
         to: '/artists'
-    }, {
+    }, /*{
         label: 'Albums',
         icon: 'i-heroicons-view-columns',
         to: '/album'
-    }
+    }*/
 ];
 
 const right = [

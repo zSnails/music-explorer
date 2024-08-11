@@ -64,22 +64,14 @@ const carouselRef = ref();
 async function loadTracks(): Promise<void> {
     const response = await $fetch<ResponseSongs>(`https://api.spotify.com/v1/artists/${route.params.id}/top-tracks`, {
         method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token.value}`
-        },
     });
 
-    console.debug("response.tracks", response.tracks);
     tracks.value = response.tracks;
 }
 
 async function loadArtist(): Promise<void> {
     const response = await $fetch<ResponseArtist>(`https://api.spotify.com/v1/artists/${route.params.id}`, {
         method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token.value}`
-        },
-
     });
 
     artist.value = response;
@@ -89,9 +81,6 @@ async function loadArtist(): Promise<void> {
 const loadAlbums = async () => {
     const response = await $fetch<ResponseAlbums>(`https://api.spotify.com/v1/artists/${route.params.id}/albums`, {
         method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token.value}`
-        },
     });
     albums.value = response.items;
 }
