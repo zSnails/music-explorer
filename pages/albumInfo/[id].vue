@@ -67,6 +67,3 @@ function formatDuration(ms: number): string {
 
 loadAlbumInfo();
 </script>
-
-<style scoped>
-</style>
