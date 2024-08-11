@@ -57,6 +57,9 @@
 import { useStorage, useDebounceFn } from '@vueuse/core';
 import { format } from 'date-fns';
 
+const { query: query, fullPath: fullPath } = useRoute();
+const { push } = useRouter();
+
 interface ExternalUrls {
     spotify: string;
 };
@@ -95,28 +98,43 @@ interface Response {
     tracks: Tracks;
 };
 
-const search = ref<string>("");
-const album = ref<string>("");
-const artist = ref<string>("");
+const search = ref<string>(decodeURIComponent(query.query as string || ""));
+const album = ref<string>(decodeURIComponent(query.album as string || ""));
+const artist = ref<string>(decodeURIComponent(query.artist as string || ""));
 const loading = ref<boolean>(false);
-
-const token = useStorage("access_token", "");
-
-const next = ref<string>("");
-const tracks = ref<Tracks>({ items: [], next: next.value });
 
 const debouncedSearch = useDebounceFn(async () => {
     let data = [search.value];
+    interface Search {
+        query?: string;
+        album?: string;
+        artist?: string;
+    }
+
+    let q: Search = {};
+    if (search.value !== "") {
+        q.query = search.value;
+    }
+
     if (album.value !== "") {
-        data.push(`album:${encodeURIComponent(album.value)}`);
+        const val = encodeURIComponent(album.value);
+        data.push(`album:${val}`);
+        q.album = val;
     }
 
     if (artist.value !== "") {
-        data.push(`artist:${encodeURIComponent(artist.value)}`);
+        const val = encodeURIComponent(artist.value);
+        data.push(`artist:${val}`);
+        q.artist = val;
     }
 
     const preQuery = data.filter((val) => val !== "").join(" ");
     const query = encodeURIComponent(preQuery);
+    console.debug(q);
+    push({
+        path: fullPath,
+        query: q as any,
+    });
     if (query !== "") {
         loading.value = true;
         const found = await loadTracks(query);
@@ -124,6 +142,16 @@ const debouncedSearch = useDebounceFn(async () => {
         loading.value = false;
     }
 }, 500);
+
+if (query.q !== "") {
+    debouncedSearch();
+}
+
+const token = useStorage("access_token", "");
+
+const next = ref<string>("");
+const tracks = ref<Tracks>({ items: [], next: next.value });
+
 
 async function loadMore() {
     loading.value = true;
