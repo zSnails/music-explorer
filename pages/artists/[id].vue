@@ -82,11 +82,8 @@ async function loadArtist(): Promise<void> {
 
     });
 
-
     artist.value = response.name;
     followers.value = response.followers.total;
-    //images.value = [response.images[0].url];
-
 }
 
 const loadAlbums = async () => {
