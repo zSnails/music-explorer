@@ -37,6 +37,10 @@ const left = [
         label: 'Artists',
         icon: 'i-heroicons-user-group',
         to: '/artists'
+    }, {
+        label: 'Albums',
+        icon: 'i-heroicons-view-columns',
+        to: '/album'
     }
 ];
 
