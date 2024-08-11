@@ -27,10 +27,9 @@ async function getToken(code: string): Promise<string> {
     return response.access_token;
 }
 
-onBeforeMount(async () => {
-    const token = await getToken(route.query.code as string);
-    localStorage.setItem("access_token", token);
-    router.push('/');
-});
+const accessToken = useCookie("access_token", { maxAge: 3600 });
+const token = await getToken(route.query.code as string);
+accessToken.value = token;
+router.push('/');
 
 </script>
