@@ -2,7 +2,8 @@
     <section class="flex flex-col gap-5 min-w-[1008px] w-full">
         <div class="flex flex-col items-baseline">
             <UInput class="w-full" size="xl" icon="i-heroicons-magnifying-glass-20-solid" v-model="search"
-                @change="debouncedSearch" placeholder="Enter a name..." :ui="{ icon: { trailing: { pointer: '' } } }">
+                :loading="loading" @change="debouncedSearch" placeholder="Enter a name..."
+                :ui="{ icon: { trailing: { pointer: '' } } }">
                 <template #trailing>
                     <UButton v-show="search !== ''" color="gray" variant="link" icon="i-heroicons-x-mark-20-solid"
                         :padded="false" @click="search = ''" />
@@ -28,7 +29,7 @@
             <ClientOnly fallback-tag="span" fallback="Loading songs...">
                 <UCard v-for="(track, idx) in tracks?.items" :key="idx" as="a" target="_blank"
                     :href="track.external_urls.spotify"
-                    class="shadow-xl hover:scale-105 hover:bg-slate-100 hover:animate-pulse min-w-[500px] max-w-[500px] h-fit max-h-[200px] w-full flex flex-col gap-6">
+                    class="shadow-xl hover:scale-105 hover:bg-slate-100 hover:animate-pulse min-w-[500px] max-w-[500px] h-fit max-h-[220px] min-h-[220px] w-full flex flex-col gap-6">
                     <div class="flex flex-row justify-between">
                         <img :src="track.album.images[0].url" :alt="track.album.name" width="100"
                             class="mb-2 rounded-xl">
@@ -48,6 +49,8 @@
                 </UCard>
             </ClientOnly>
         </div>
+        <UButton v-if="tracks.items.length > 0" :disabled="loading" @click="loadMore" class="w-fit mx-auto">Load more
+        </UButton>
     </section>
 </template>
 <script setup lang="ts">
@@ -85,6 +88,7 @@ interface Album {
 
 interface Tracks {
     items: Song[];
+    next: string;
 };
 
 interface Response {
@@ -94,13 +98,15 @@ interface Response {
 const search = ref<string>("");
 const album = ref<string>("");
 const artist = ref<string>("");
+const loading = ref<boolean>(false);
 
-const tracks = ref<Tracks>({ items: [] });
 const token = useStorage("access_token", "");
+
+const next = ref<string>("");
+const tracks = ref<Tracks>({ items: [], next: next.value });
 
 const debouncedSearch = useDebounceFn(async () => {
     let data = [search.value];
-
     if (album.value !== "") {
         data.push(`album:${encodeURIComponent(album.value)}`);
     }
@@ -110,13 +116,21 @@ const debouncedSearch = useDebounceFn(async () => {
     }
 
     const preQuery = data.filter((val) => val !== "").join(" ");
-    console.debug(preQuery);
     const query = encodeURIComponent(preQuery);
     if (query !== "") {
+        loading.value = true;
         const found = await loadTracks(query);
         tracks.value = found;
+        loading.value = false;
     }
-}, 1000);
+}, 500);
+
+async function loadMore() {
+    loading.value = true;
+    const newTracks = await loadNext(next.value);
+    tracks.value.items.push(...newTracks.items);
+    loading.value = false;
+}
 
 async function loadTracks(query: string): Promise<Tracks> {
     const response = await $fetch<Response>("https://api.spotify.com/v1/search", {
@@ -131,7 +145,18 @@ async function loadTracks(query: string): Promise<Tracks> {
             offset: 0,
         },
     });
-
+    next.value = response.tracks.next;
     return response.tracks
+}
+
+async function loadNext(nextUrl: string): Promise<Tracks> {
+    const response = await $fetch<Response>(nextUrl, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token.value}`
+        }
+    });
+    next.value = response.tracks.next;
+    return response.tracks;
 }
 </script>
