@@ -95,33 +95,13 @@ const loadAlbums = async () => {
         headers: {
             "Authorization": `Bearer ${token.value}`
         },
-
     });
-
-    console.log(response.items);
-
-    for (let i = 0; i < 10; i++) {
-        
-        var album: Album = {
-            name: response.items[i].name,
-            release_date: response.items[i].release_date,
-            images: response.items[i].images,
-            total_tracks: response.items[i].total_tracks,
-            external_urls: response.items[i].external_urls,
-        }
-        console.log(album.total_tracks);
-        if (album.total_tracks > 1) {
-            albums.value.push(album);
-        }
-    }
-
-    console.log(albums.value);
-
+    albums.value = response.items;
 }
 
 
-onMounted(() => {
 
+onBeforeMount(async () => {
     loadTracks();
     loadArtist();
     loadAlbums();
