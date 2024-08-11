@@ -91,15 +91,6 @@ onBeforeMount(async () => {
     loadTracks();
     loadArtist();
     loadAlbums();
-    setInterval(() => {
-        if (!carouselRef.value) return;
-
-        if (carouselRef.value.page === carouselRef.value.pages) {
-            return carouselRef.value.select(0);
-        }
-
-        carouselRef.value.next();
-    }, 7000);
 });
 
 const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-6 w-full' } };
