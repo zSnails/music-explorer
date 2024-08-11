@@ -118,28 +118,29 @@ const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-
 </script>
 
 <template>
-    <div>
-        <div class="flex justify-between ">
-            <div>
-                <h1 class="text-xl font-bold mb-4">Artist: {{ artist }}</h1>
-                <h1 class="text-xl font-bold font-sans">Followers: {{ new Intl.NumberFormat("en-US", {
+    <div class="flex flex-col gap-2">
+        <div class="flex justify-between">
+            <div class="flex flex-row gap-4 items-center justify-between w-full">
+                <div class="flex flex-row gap-2 items-center">
+                    <UAvatar size="3xl" :src="artist?.images[0]?.url"></UAvatar>
+                    <h1 class="text-8xl font-bold mb-4">{{ artist?.name }}</h1>
+                </div>
+                <h1 class="text-6xl font-bold font-sans">{{ new Intl.NumberFormat("en-US", {
                     notation:
                         "compact"
-                }).format(followers) }}</h1>
+                }).format(followers) }} Followers</h1>
             </div>
-            <div>
+            <!-- <div>
                 <UCarousel ref="carouselRef" v-slot="{ item }" :items="images"
                     class="rounded-lg overflow-hidden w-32 h-32">
                     <img :src="item" class="w-32 h-32" draggable="false" />
                 </UCarousel>
-            </div>
+            </div> -->
         </div>
-    </div>
-    <div class="flex justify-between items-start">
-        <div class="pr-8 min-w-[500px]">
-            <h1 class="text-xl font-bold mb-8">Top Tracks</h1>
-            <div class="flex flex-col gap-2">
-                <ClientOnly fallback-tag="span" fallback="Loading tracks...">
+        <div class="flex justify-between items-start">
+            <div class="pr-8 min-w-[500px]">
+                <h1 class="text-xl font-bold mb-2">Top Tracks</h1>
+                <div class="flex flex-col gap-2">
                     <UCard v-for="(song, idx) in tracks" :key="idx" as="a" target="_blank" :ui="cardConfig"
                         :href="song.external_urls.spotify"
                         class="shadow-xl min-h-[108px] hover:scale-105 hover:bg-slate-100 hover:animate-pulse w-full h-fit flex flex-row gap-6">
