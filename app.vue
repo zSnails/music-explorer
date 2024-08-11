@@ -32,6 +32,11 @@ const left = [
         label: 'Music',
         icon: 'i-heroicons-musical-note',
         to: '/music'
+    },
+    {
+        label: 'Albums',
+        icon: 'i-heroicons-view-columns',
+        to: '/album'
     }
 ];
 
