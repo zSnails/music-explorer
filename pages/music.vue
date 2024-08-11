@@ -31,7 +31,7 @@
                     :href="track.external_urls.spotify"
                     class="shadow-xl hover:scale-105 hover:bg-slate-100 hover:animate-pulse min-w-[500px] max-w-[500px] h-fit max-h-[220px] min-h-[220px] w-full flex flex-col gap-6">
                     <div class="flex flex-row justify-between">
-                        <img :src="track.album.images[0].url" :alt="track.album.name" width="100"
+                        <img :src="track.album.images[0]?.url" :alt="track.album.name" width="100"
                             class="mb-2 rounded-xl">
                         <h1>{{ format(track.duration_ms, 'mm:ss') }}</h1>
                     </div>
