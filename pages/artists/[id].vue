@@ -9,7 +9,7 @@ const route = useRoute();
 
 const tracks = ref<Song[]>();
 const albums = ref<Album[]>([]);
-const artist = ref("");
+const artist = ref<ResponseArtist>();
 const followers = ref(0);
 const images = ref<string[]>([]);
 
@@ -82,7 +82,7 @@ async function loadArtist(): Promise<void> {
 
     });
 
-    artist.value = response.name;
+    artist.value = response;
     followers.value = response.followers.total;
 }
 
