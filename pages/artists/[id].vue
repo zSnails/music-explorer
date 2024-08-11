@@ -1,149 +1,17 @@
 <script lang="ts" setup>
 
-import { ref, onMounted } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
-import { useStorage, useDebounceFn } from '@vueuse/core';
+import { useStorage } from '@vueuse/core';
 import { format } from 'date-fns';
 const token = useStorage("access_token", "");
 const route = useRoute();
 
-const tableConfig = {
-    wrapper: 'relative overflow-x-auto bg-white border border-gray-300 rounded-lg', // Fondo blanco, borde gris claro y bordes redondeados para el contenedor
-    base: 'min-w-full table-fixed border-collapse', // Border-collapse para compartir bordes
-    divide: 'divide-y divide-gray-200 dark:divide-gray-700', // Líneas divisorias grises
-    thead: 'relative bg-green-800 border-b border-gray-300 rounded-t-lg', // Fondo oscuro para el encabezado con borde inferior gris claro y bordes superiores redondeados
-    tbody: 'divide-y divide-gray-200 dark:divide-gray-800 rounded-b-lg', // Líneas divisorias grises en el cuerpo y bordes inferiores redondeados
-    caption: 'sr-only',
-    tr: {
-        base: 'border-b border-gray-200 dark:border-gray-700', // Borde inferior gris claro para cada fila
-        selected: 'bg-gray-100 dark:bg-gray-800/50', // Fondo gris claro para filas seleccionadas
-        active: 'hover:bg-gray-100 dark:hover:bg-gray-800/50 cursor-pointer', // Fondo gris claro al pasar el cursor
-    },
-    th: {
-        base: 'text-left rtl:text-right border border-gray-300', // Borde alrededor de las celdas del encabezado
-        padding: 'px-4 py-3.5',
-        color: 'text-white', // Texto blanco para el encabezado
-        font: 'font-semibold',
-        size: 'text-sm',
-        bg: 'bg-gray-800' // Fondo gris oscuro para el encabezado
-    },
-    td: {
-        base: 'whitespace-nowrap border border-gray-300', // Borde alrededor de las celdas del cuerpo
-        padding: 'px-4 py-4',
-        color: 'text-gray-900 dark:text-gray-400', // Texto gris oscuro para el cuerpo
-        font: '',
-        size: 'text-sm',
-        bg: 'bg-white' // Fondo blanco para las celdas del cuerpo
-    },
-    checkbox: {
-        padding: 'ps-4',
-    },
-    loadingState: {
-        wrapper: 'flex flex-col items-center justify-center flex-1 px-6 py-14 sm:px-14',
-        label: 'text-sm text-center text-gray-900 dark:text-white',
-        icon: 'w-6 h-6 mx-auto text-gray-400 dark:text-gray-500 mb-4 animate-spin',
-    },
-    emptyState: {
-        wrapper: 'flex flex-col items-center justify-center flex-1 px-6 py-14 sm:px-14',
-        label: 'text-sm text-center text-gray-900 dark:text-white',
-        icon: 'w-6 h-6 mx-auto text-gray-400 dark:text-gray-500 mb-4',
-    },
-    progress: {
-        wrapper: 'absolute inset-x-0 -bottom-[0.5px] p-0',
-    },
-    default: {
-        sortAscIcon: 'i-heroicons-bars-arrow-up-20-solid',
-        sortDescIcon: 'i-heroicons-bars-arrow-down-20-solid',
-        sortButton: {
-            icon: 'i-heroicons-arrows-up-down-20-solid',
-            trailing: true,
-            square: true,
-            color: 'gray',
-            variant: 'ghost',
-            class: '-m-1.5',
-        },
-        checkbox: {
-            color: 'primary',
-        },
-        progress: {
-            color: 'primary',
-            animation: 'carousel',
-        },
-        loadingState: {
-            icon: 'i-heroicons-arrow-path-20-solid',
-            label: 'Loading...',
-        },
-        emptyState: {
-            icon: 'i-heroicons-circle-stack-20-solid',
-            label: 'No hay empleados registrados actualmente',
-        },
-    },
-};
-
-
-
-const tracksColumns = [
-    {
-        key: "name",
-        label: "Name",
-    },
-    {
-        key: "release_date",
-        label: "Release date",
-    },
-    {
-        key: "duration_ms",
-        label: "duration",
-    },
-    {
-        key: "explicit",
-        label: "explicit",
-    },
-];
-
-const albumsColumns = [
-    {
-        key: "name",
-        label: "Name",
-    },
-    {
-        key: "release_date",
-        label: "Release date",
-    },
-    {
-        key: "total_tracks",
-        label: "Total tracks",
-    },
-];
-
-
-const linkdemirda = "https://www.youtube.com/";
-const imagendemierda = "https://preview.redd.it/fdog4gcr20551.png?width=572&format=png&auto=webp&s=e961bddb8c12d5be17ecd388bd5e4a61e1bd3c20"
-
-const albumsTest = [
-    {
-        name: "FELIZ CUMPLEAÑOS FERXXO",
-        release: "2022",
-        tracks: 10,
-        image: "https://i1.sndcdn.com/artworks-HovX7DXINUQX-0-t500x500.jpg",
-    },
-];
-
-
-
-
-const tracks = ref<Tracks>({ items: [] });
-const songs = ref<Song[]>([]);
+const tracks = ref<Song[]>();
 const albums = ref<Album[]>([]);
 const artist = ref("");
 const followers = ref(0);
 const images = ref<string[]>([]);
-
-interface Tracks {
-    items: Song[];
-    [index: number]: Song;
-}
-
 
 interface Image {
     url: string;
@@ -151,20 +19,18 @@ interface Image {
     width: number;
 }
 
-
 interface Song {
     name: string;
     album: Album;
     duration_ms: number;
-    explicit: string;
+    explicit: boolean;
     release_date: string;
-    images: Image[];
-
+    external_urls: ExternalUrls;
 }
 
 interface ResponseSongs {
-    tracks: Tracks;
-};
+    tracks: Song[];
+}
 
 interface ResponseArtist {
     name: string;
