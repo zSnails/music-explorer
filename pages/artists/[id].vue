@@ -59,47 +59,21 @@ interface ExternalUrls {
     spotify: string;
 };
 
-
 const carouselRef = ref();
 
-const loadTracks = async (): Promise<Tracks> => {
+async function loadTracks(): Promise<void> {
     const response = await $fetch<ResponseSongs>(`https://api.spotify.com/v1/artists/${route.params.id}/top-tracks`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token.value}`
         },
-
     });
 
-    for (let i = 0; i < 10; i++) {
-        var song: Song = {
-            name: response.tracks[i].name,
-            album: response.tracks[i].album,
-            duration_ms: response.tracks[i].duration_ms,
-            explicit: response.tracks[i].explicit,
-            release_date: response.tracks[i].album.release_date,
-            images: response.tracks[i].album.images,
-        }
-        if (song.explicit) {
-            song.explicit = "Explicit";
-        } else {
-            song.explicit = "";
-        }
-
-       
-        songs.value.push(song);
-
-        
-
-        const image = songs.value[i].images[0].url;
-        images.value.push(image);
-
-    }
-
-    return tracks.value = response.tracks;
+    console.debug("response.tracks", response.tracks);
+    tracks.value = response.tracks;
 }
 
-const loadArtist = async () => {
+async function loadArtist(): Promise<void> {
     const response = await $fetch<ResponseArtist>(`https://api.spotify.com/v1/artists/${route.params.id}`, {
         method: "GET",
         headers: {
