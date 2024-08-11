@@ -122,8 +122,10 @@ const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-
         <div class="flex justify-between ">
             <div>
                 <h1 class="text-xl font-bold mb-4">Artist: {{ artist }}</h1>
-                <h1 class="text-xl font-bold font-sans">Followers: {{ new Intl.NumberFormat("en-US", { notation:
-                    "compact" }).format(followers) }}</h1>
+                <h1 class="text-xl font-bold font-sans">Followers: {{ new Intl.NumberFormat("en-US", {
+                    notation:
+                        "compact"
+                }).format(followers) }}</h1>
             </div>
             <div>
                 <UCarousel ref="carouselRef" v-slot="{ item }" :items="images"
