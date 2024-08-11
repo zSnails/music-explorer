@@ -36,7 +36,7 @@ const left = [
     {
         label: 'Artists',
         icon: 'i-heroicons-user-group',
-        to: '/searchArtist'
+        to: '/artists'
     }
 ];
 
