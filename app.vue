@@ -19,13 +19,16 @@
 </template>
 <script setup lang="ts">
 import { ofetch } from "ofetch";
-const isLogged = computed(() => !!token.value);
-const token = useCookie("access_token");
 
-globalThis.$fetch = ofetch.create({
-    headers: {
-        "Authorization": `Bearer ${token.value}`
-    }
+const token = useCookie("access_token");
+const isLogged = computed(() => !!token.value);
+
+watch(token, (value) => {
+    globalThis.$fetch = ofetch.create({
+        headers: {
+            "Authorization": `Bearer ${value}`
+        }
+    });
 });
 
 const left = [

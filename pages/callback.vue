@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { CookieOptions } from '#app';
 import { useStorage } from '@vueuse/core';
-import { onBeforeMount } from 'vue';
 
 const config = useRuntimeConfig();
 const route = useRoute();
@@ -27,9 +27,10 @@ async function getToken(code: string): Promise<string> {
     return response.access_token;
 }
 
-const accessToken = useCookie("access_token", { maxAge: 3600 });
+const accessToken = useCookie("access_token", { maxAge: 3600, sameSite: 'lax' });
 const token = await getToken(route.query.code as string);
 accessToken.value = token;
+refreshCookie("access_token");
 router.push('/');
 
 </script>
