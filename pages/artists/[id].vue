@@ -42,7 +42,6 @@ interface ResponseAlbums {
     items: Album[];
 };
 
-
 interface Album {
     name: string;
     release_date: string;
