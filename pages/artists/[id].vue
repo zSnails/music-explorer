@@ -113,6 +113,7 @@ onBeforeMount(async () => {
     }, 7000);
 });
 
+const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-6 w-full' } };
 
 </script>
 
