@@ -2,16 +2,13 @@
 
 import { ref, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
-import { useStorage } from '@vueuse/core';
 import { format } from 'date-fns';
-const token = useStorage("access_token", "");
 const route = useRoute();
 
 const tracks = ref<Song[]>();
 const albums = ref<Album[]>([]);
 const artist = ref<ResponseArtist>();
 const followers = ref(0);
-const images = ref<string[]>([]);
 
 interface Image {
     url: string;
