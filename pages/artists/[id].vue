@@ -45,6 +45,7 @@ interface Album {
     images: Image[];
     total_tracks: number;
     external_urls: ExternalUrls;
+    id: string;
 };
 
 interface Followers {
@@ -136,7 +137,7 @@ const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-
                 <h1 class="text-xl font-bold mb-2">Albums</h1>
                 <div class="flex flex-col gap-2">
                     <UCard v-for="(album, idx) in albums.filter(a => a.total_tracks > 1).slice(0, 10)" :key="idx" as="a"
-                        target="_blank" :ui="cardConfig" :href="album.external_urls.spotify"
+                        target="" :ui="cardConfig" :href="`/albums/${album.id}`"
                         class="shadow-xl min-h-[108px] max-h-[108px] hover:scale-105 hover:bg-slate-100 hover:animate-pulse w-full h-fit flex flex-row gap-6">
                         <div class="flex flex-row w-full h-full justify-between">
                             <div class="flex flex-row gap-5">
