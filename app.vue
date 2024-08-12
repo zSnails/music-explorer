@@ -40,7 +40,7 @@ updateToken();
 const left = [
     {
         label: 'Music Explorer',
-        icon: 'i-heroicons-home',
+        icon: 'i-heroicons-musical-note',
         to: '/'
     },
     {
