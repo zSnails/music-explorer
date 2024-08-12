@@ -94,7 +94,7 @@ const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-
 <template>
     <div class="flex flex-col gap-2">
         <div class="flex justify-between">
-            <div class="flex flex-row gap-4 items-center justify-between w-full">
+            <div class="flex lg:flex-row flex-col gap-4 items-center justify-between w-full">
                 <div class="flex flex-row gap-2 items-center">
                     <UAvatar size="3xl" :src="artist?.images[0]?.url"></UAvatar>
                     <h1 class="text-8xl font-bold mb-4">{{ artist?.name }}</h1>
@@ -105,7 +105,7 @@ const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-
                 }).format(followers) }} Followers</h1>
             </div>
         </div>
-        <div class="flex justify-between items-start">
+        <div class="flex lg:flex-row flex-col justify-between items-start">
             <div class="pr-8 min-w-[500px]">
                 <h1 class="text-xl font-bold mb-2">Top Tracks</h1>
                 <div class="flex flex-col gap-2">
