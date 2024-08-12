@@ -56,8 +56,6 @@ interface ExternalUrls {
     spotify: string;
 };
 
-const carouselRef = ref();
-
 async function loadTracks(): Promise<void> {
     const response = await $fetch<ResponseSongs>(`https://api.spotify.com/v1/artists/${route.params.id}/top-tracks`, {
         method: "GET",
@@ -82,8 +80,6 @@ const loadAlbums = async () => {
     albums.value = response.items;
 }
 
-
-
 onBeforeMount(async () => {
     loadTracks();
     loadArtist();
@@ -107,12 +103,6 @@ const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-
                         "compact"
                 }).format(followers) }} Followers</h1>
             </div>
-            <!-- <div>
-                <UCarousel ref="carouselRef" v-slot="{ item }" :items="images"
-                    class="rounded-lg overflow-hidden w-32 h-32">
-                    <img :src="item" class="w-32 h-32" draggable="false" />
-                </UCarousel>
-            </div> -->
         </div>
         <div class="flex justify-between items-start">
             <div class="pr-8 min-w-[500px]">
