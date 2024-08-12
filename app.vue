@@ -23,13 +23,19 @@ import { ofetch } from "ofetch";
 const token = useCookie("access_token");
 const isLogged = computed(() => !!token.value);
 
-watch(token, (value) => {
+watch(token, () => {
+    updateToken();
+});
+
+function updateToken() {
     globalThis.$fetch = ofetch.create({
         headers: {
-            "Authorization": `Bearer ${value}`
+            "Authorization": `Bearer ${token.value}`
         }
     });
-});
+}
+
+updateToken();
 
 const left = [
     {
