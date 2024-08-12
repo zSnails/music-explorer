@@ -152,7 +152,7 @@ const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-
                                     <UIcon class="w-4 h-4" name="i-heroicons-arrow-top-right-on-square-20-solid">
                                     </UIcon>
                                 </div>
-                                <UBadge color="sky">Tracks {{ album.total_tracks }}</UBadge>
+                                <UBadge color="sky">{{ album.total_tracks }} Tracks</UBadge>
                             </div>
                         </div>
                     </UCard>
