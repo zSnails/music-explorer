@@ -1,32 +1,16 @@
 <script lang="ts" setup>
-
+import type { Track, Album, Image } from "~/track";
 import { ref, onBeforeMount } from "vue";
 import { useRoute } from "vue-router";
-import { format } from 'date-fns';
-const route = useRoute();
+import SongCard from "~/components/SongCard.vue";
 
-const tracks = ref<Song[]>();
+const route = useRoute();
+const tracks = ref<Track[]>();
 const albums = ref<Album[]>([]);
 const artist = ref<ResponseArtist>();
-const followers = ref(0);
-
-interface Image {
-    url: string;
-    height: number;
-    width: number;
-}
-
-interface Song {
-    name: string;
-    album: Album;
-    duration_ms: number;
-    explicit: boolean;
-    release_date: string;
-    external_urls: ExternalUrls;
-}
 
 interface ResponseSongs {
-    tracks: Song[];
+    tracks: Track[];
 }
 
 interface ResponseArtist {
@@ -39,22 +23,9 @@ interface ResponseAlbums {
     items: Album[];
 };
 
-interface Album {
-    name: string;
-    release_date: string;
-    images: Image[];
-    total_tracks: number;
-    external_urls: ExternalUrls;
-    id: string;
-};
-
 interface Followers {
     href: null;
     total: number;
-};
-
-interface ExternalUrls {
-    spotify: string;
 };
 
 async function loadTracks(): Promise<void> {
@@ -71,7 +42,6 @@ async function loadArtist(): Promise<void> {
     });
 
     artist.value = response;
-    followers.value = response.followers.total;
 }
 
 const loadAlbums = async () => {
@@ -102,38 +72,19 @@ const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-
                 <h1 class="text-6xl font-bold font-sans">{{ new Intl.NumberFormat("en-US", {
                     notation:
                         "compact"
-                }).format(followers) }} Followers</h1>
+                }).format(artist?.followers.total || 0) }} Followers</h1>
             </div>
         </div>
-        <div class="flex lg:flex-row flex-col justify-between items-start">
-            <div class="pr-8 min-w-[500px]">
+        <div class="flex gap-5 lg:flex-row m-5 flex-col justify-between items-start">
+            <div class="min-w-fit w-full">
                 <h1 class="text-xl font-bold mb-2">Top Tracks</h1>
                 <div class="flex flex-col gap-2">
-                    <UCard v-for="(song, idx) in tracks" :key="idx" as="a" target="_blank" :ui="cardConfig"
-                        :href="song.external_urls.spotify"
-                        class="shadow-xl min-h-[108px] hover:scale-105 hover:bg-slate-100 hover:animate-pulse w-full h-fit flex flex-row gap-6">
-                        <div class="flex flex-row w-full h-full justify-between">
-                            <div class="flex flex-row gap-5">
-                                <img :src="song.album.images[0]?.url" :alt="song.name" width="50"
-                                    class="mb-2 rounded-lg">
-                                <div class="flex flex-col gap-2">
-                                    <h1 class="font-bold text-xl">{{ song.name }}</h1>
-                                    <h1 class="font-bold text-md">{{ format(song.duration_ms, 'mm:ss') }}</h1>
-                                </div>
-
-                            </div>
-                            <div class="flex flex-col justify-between items-end">
-                                <div class="flex flex-row justify-between items-baseline truncate text-ellipsis">
-                                    <UIcon class="w-4 h-4" name="i-heroicons-arrow-top-right-on-square-20-solid">
-                                    </UIcon>
-                                </div>
-                                <UBadge color="primary" v-if="song.explicit">E</UBadge>
-                            </div>
-                        </div>
-                    </UCard>
+                    <SongCard v-for="(track, idx) in tracks" :key="idx" :url="track.external_urls.spotify"
+                        :name="track.name" :duration_ms="track.duration_ms" :image="track.album?.images[0]?.url"
+                        :explicit="track.explicit" />
                 </div>
             </div>
-            <div class="pl-2 min-w-[500px]">
+            <div class="min-w-fit w-full">
                 <h1 class="text-xl font-bold mb-2">Albums</h1>
                 <div class="flex flex-col gap-2">
                     <UCard v-for="(album, idx) in albums.filter(a => a.total_tracks > 1).slice(0, 10)" :key="idx" as="a"
