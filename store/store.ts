@@ -3,7 +3,8 @@ import type { User } from "~/user";
 
 export const useStore = defineStore("app", {
     state: () => ({
-        user: null as any
+        user: null as any,
+        genres: [] as string[],
     }),
     actions: {
         setUser(user: User | null) {

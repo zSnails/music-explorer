@@ -21,6 +21,8 @@
                     <div class="flex flex-row gap-2">
                         <UInput @change="debouncedSearch" v-model="artist" placeholder="Artist..."></UInput>
                         <UInput @change="debouncedSearch" v-model="album" placeholder="Album..."></UInput>
+                        <USelectMenu @change="debouncedSearch" class="min-w-[150px]" v-model="genre"
+                            :options="store.genres"></USelectMenu>
                     </div>
                 </template>
             </UAccordion>
@@ -58,9 +60,12 @@
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core';
 import { format } from 'date-fns';
+import { useStore } from '~/store/store';
 
 const { query: query, fullPath: fullPath } = useRoute();
 const { push } = useRouter();
+
+const store = useStore();
 
 interface ExternalUrls {
     spotify: string;
@@ -103,6 +108,7 @@ interface Response {
 const search = ref<string>(decodeURIComponent(query.query as string || ""));
 const album = ref<string>(decodeURIComponent(query.album as string || ""));
 const artist = ref<string>(decodeURIComponent(query.artist as string || ""));
+const genre = ref<string>(decodeURIComponent(query.genre as string || ""));
 const loading = ref<boolean>(false);
 
 const debouncedSearch = useDebounceFn(async () => {
@@ -111,6 +117,7 @@ const debouncedSearch = useDebounceFn(async () => {
         query?: string;
         album?: string;
         artist?: string;
+        genre?: string;
     }
 
     let q: Search = {};
@@ -126,6 +133,11 @@ const debouncedSearch = useDebounceFn(async () => {
     if (artist.value !== "") {
         data.push(`artist:"${artist.value}"`);
         q.artist = artist.value;
+    }
+
+    if (genre.value !== "") {
+        data.push(`genre:"${genre.value}"`);
+        q.genre = genre.value;
     }
 
     const query = data.filter((val) => val !== "").join(" ");
