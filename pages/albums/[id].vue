@@ -41,7 +41,7 @@ interface Album {
 }
 
 async function loadAlbumInfo() {
-    const response = await $fetch<Album>(`https://api.spotify.com/v1/albums/${albumId}`, {
+    const response = await $fetch<Album>(`/api/spotify/albums/${albumId}`, {
         method: 'GET',
     });
     album.value = response;

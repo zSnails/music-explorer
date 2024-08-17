@@ -29,7 +29,7 @@ interface Followers {
 };
 
 async function loadTracks(): Promise<void> {
-    const response = await $fetch<ResponseSongs>(`https://api.spotify.com/v1/artists/${route.params.id}/top-tracks`, {
+    const response = await $fetch<ResponseSongs>(`/api/spotify/artists/${route.params.id}/top-tracks`, {
         method: "GET",
     });
 
@@ -37,7 +37,7 @@ async function loadTracks(): Promise<void> {
 }
 
 async function loadArtist(): Promise<void> {
-    const response = await $fetch<ResponseArtist>(`https://api.spotify.com/v1/artists/${route.params.id}`, {
+    const response = await $fetch<ResponseArtist>(`/api/spotify/artists/${route.params.id}`, {
         method: "GET",
     });
 
@@ -45,7 +45,7 @@ async function loadArtist(): Promise<void> {
 }
 
 const loadAlbums = async () => {
-    const response = await $fetch<ResponseAlbums>(`https://api.spotify.com/v1/artists/${route.params.id}/albums`, {
+    const response = await $fetch<ResponseAlbums>(`/api/spotify/artists/${route.params.id}/albums`, {
         method: "GET",
     });
     albums.value = response.items;

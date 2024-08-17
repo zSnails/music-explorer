@@ -35,11 +35,7 @@
     </section>
 </template>
 <script lang="ts" setup>
-
-
-import { useStorage, useDebounceFn } from '@vueuse/core';
-const token = useStorage("access_token", "");
-
+import { useDebounceFn } from '@vueuse/core';
 
 const search = ref("");
 
@@ -85,7 +81,7 @@ const debouncedSearch = useDebounceFn(async () => {
 }, 500);
 
 async function loadTracks(query: string): Promise<Artists> {
-    const response = await $fetch<Response>("https://api.spotify.com/v1/search", {
+    const response = await $fetch<Response>("/api/spotify/search", {
         method: "GET",
         query: {
             q: query,

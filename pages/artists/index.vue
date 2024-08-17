@@ -79,7 +79,7 @@ const debouncedSearch = useDebounceFn(async () => {
 }, 1000);
 
 async function loadTracks(query: string): Promise<Artists> {
-    const response = await $fetch<Response>("https://api.spotify.com/v1/search", {
+    const response = await $fetch<Response>("/api/spotify/search", {
         method: "GET",
         query: {
             q: query,

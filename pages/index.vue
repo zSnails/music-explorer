@@ -129,11 +129,13 @@ const debouncedSearch = useDebounceFn(async () => {
     }
 
     const query = data.filter((val) => val !== "").join(" ");
+
+    push({
+        path: fullPath,
+        query: q as any,
+    });
+
     if (query !== "") {
-        push({
-            path: fullPath,
-            query: q as any,
-        });
         loading.value = true;
         const found = await loadTracks(query);
         tracks.value = found;
@@ -156,7 +158,7 @@ async function loadMore() {
 }
 
 async function loadTracks(query: string): Promise<Tracks> {
-    const response = await $fetch<Response>("https://api.spotify.com/v1/search", {
+    const response = await $fetch<Response>("/api/spotify/search", {
         method: "GET",
         query: {
             q: query,
@@ -169,9 +171,12 @@ async function loadTracks(query: string): Promise<Tracks> {
     return response.tracks
 }
 
-async function loadNext(nextUrl: string): Promise<Tracks> {
-    const response = await $fetch<Response>(nextUrl, {
+async function loadNext(url: string): Promise<Tracks> {
+    const response = await $fetch<Response>('/api/spotify/next', {
         method: "GET",
+        query: {
+            url
+        }
     });
     next.value = response.tracks.next;
     return response.tracks;

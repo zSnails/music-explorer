@@ -1,10 +1,17 @@
 <template>
     <div class="grid gap-8 min-h-[100dvh] grid-rows-[auto_1fr_auto]">
         <header class="sticky top-0 z-50">
-            <nav class="flex px-5 flex-row justify-between bg-slate-100 h-fit min-h-[56px] shadow">
+            <nav class="flex px-5 flex-row justify-between items-center bg-slate-100 h-fit min-h-[56px] shadow">
                 <UHorizontalNavigation class="w-fit" :links="left" />
                 <ClientOnly>
                     <UHorizontalNavigation class="w-fit" v-if="!isLogged" :links="right" />
+                    <UDropdown :items="items" v-else>
+                        <div class="flex flex-row items-center gap-2">
+                            {{ store.getUser().display_name }}
+                            <UAvatar :src="store.getUser().images[0]?.url">
+                            </UAvatar>
+                        </div>
+                    </UDropdown>
                 </ClientOnly>
             </nav>
         </header>
@@ -21,9 +28,15 @@
 import { useStore } from './store/store';
 
 const store = useStore();
-const refreshToken = useCookie("refresh_token");
+let isLogged = computed(() => !!store.user);
 
-let isLogged = computed(() => refreshToken.value !== null && typeof refreshToken.value !== "undefined");
+const items = [
+    [{
+        label: 'Logout',
+        icon: 'i-heroicons-arrow-right-start-on-rectangle',
+        to: '/logout'
+    }],
+];
 
 const left = [
     {
