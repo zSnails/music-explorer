@@ -18,24 +18,12 @@
     </div>
 </template>
 <script setup lang="ts">
-import { ofetch } from "ofetch";
+import { useStore } from './store/store';
 
-const token = useCookie("access_token");
-const isLogged = computed(() => !!token.value);
+const store = useStore();
+const refreshToken = useCookie("refresh_token");
 
-watch(token, () => {
-    updateToken();
-});
-
-function updateToken() {
-    globalThis.$fetch = ofetch.create({
-        headers: {
-            "Authorization": `Bearer ${token.value}`
-        }
-    });
-}
-
-updateToken();
+let isLogged = computed(() => refreshToken.value !== null && typeof refreshToken.value !== "undefined");
 
 const left = [
     {
@@ -47,11 +35,7 @@ const left = [
         label: 'Artists',
         icon: 'i-heroicons-user-group',
         to: '/artists'
-    }, /*{
-        label: 'Albums',
-        icon: 'i-heroicons-view-columns',
-        to: '/album'
-    }*/
+    },
 ];
 
 const right = [

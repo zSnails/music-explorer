@@ -13,10 +13,12 @@
     "@nuxt/ui": "^2.18.4",
     "@vueuse/core": "^10.11.1",
     "date-fns": "^3.6.0",
-    "nuxt": "^3.12.4",
-    "vue": "latest"
+    "pinia": "^2.2.2",
+    "vue": "^3.4.38"
   },
   "devDependencies": {
+    "@pinia/nuxt": "^0.5.3",
+    "nuxt": "^3.12.4",
     "typescript": "^5.5.4"
   }
 }
