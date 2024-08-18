@@ -21,8 +21,8 @@
                     <div class="flex flex-row gap-2">
                         <UInput @change="debouncedSearch" v-model="artist" placeholder="Artist..."></UInput>
                         <UInput @change="debouncedSearch" v-model="album" placeholder="Album..."></UInput>
-                        <USelectMenu @change="debouncedSearch" class="min-w-[150px]" v-model="genre"
-                            :options="store.genres"></USelectMenu>
+                        <USelectMenu @change="debouncedSearch" placeholder="Genre..." class="min-w-[150px]"
+                            v-model="genre" :options="store.genres"></USelectMenu>
                     </div>
                 </template>
             </UAccordion>
