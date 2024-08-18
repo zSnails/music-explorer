@@ -49,6 +49,11 @@ const left = [
         icon: 'i-heroicons-user-group',
         to: '/artists'
     },
+    {
+        label: 'Trending',
+        icon: 'i-heroicons-arrow-trending-up',
+        to: '/trending'
+    },
 ];
 
 const right = [
