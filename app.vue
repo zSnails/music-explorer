@@ -19,13 +19,27 @@
             <NuxtLoadingIndicator></NuxtLoadingIndicator>
             <NuxtPage />
         </main>
-        <footer>
-            <h1>Footer</h1>
+        <footer class="w-full min-h-[100px] flex flex-row bg-slate-100 shadow-[0_1px_3px_2px_rgba(0,0,0,0.2)]">
+            <section class="flex flex-col items-start mx-auto m-5">
+                <div>
+                    <h1 class="font-bold text-2xl">Developers</h1>
+                </div>
+                <div class="w-fit flex flex-row gap-4">
+                    <Author name="Aaron González" github="https://github.com/zSnails"
+                        linked="https://www.linkedin.com/in/aaron-gonz%C3%A1lez-araya-2b48b223a" />
+
+                    <Author name="Anthony Jiménez" github="https://github.com/AntJimeneZ" />
+
+                    <Author name="Daniel Porras" github="https://github.com/zSnails"
+                        linked="https://www.linkedin.com/in/aaron-gonz%C3%A1lez-araya-2b48b223a" />
+                </div>
+            </section>
         </footer>
     </div>
 </template>
 <script setup lang="ts">
-import { useStore } from './store/store';
+import { useStore } from '~/store/store';
+import Author from "~/components/Author.vue"
 
 const store = useStore();
 let isLogged = computed(() => !!store.user);
