@@ -1,3 +1,12 @@
+export interface Root {
+    href: string
+    items: Track[]
+    limit: number
+    next: string
+    offset: number
+    previous: any
+    total: number
+}
 export interface Track {
     name: string;
     album: Album;
