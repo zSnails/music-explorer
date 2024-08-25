@@ -46,6 +46,11 @@ let isLogged = computed(() => !!store.user);
 
 const items = [
     [{
+        label: 'Profile',
+        icon: 'i-heroicons-user',
+        to: '/me'
+    }],
+    [{
         label: 'Logout',
         icon: 'i-heroicons-arrow-right-start-on-rectangle',
         to: '/logout'
