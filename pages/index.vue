@@ -117,7 +117,7 @@ const store = useStore();
 
 const isOpen = ref(false);
 const copy = async () => {
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(url.value);
 }
 const searchSong = async (option: string, name: string) => {
 
