@@ -104,17 +104,82 @@ if (query.q !== "") {
 }
 
 const next = ref<string>("");
-const tracks = ref<Tracks>({ items: [], next: next.value });
+
+const tracks = ref<Root>({
+    tracks: {
+        items: [],
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0
+    },
+    artists: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    albums: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    playlists: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    shows: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    episodes: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    audiobooks: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    }
+});
 
 async function loadMore() {
     loading.value = true;
     const newTracks = await loadNext(next.value);
-    tracks.value.items.push(...newTracks.items);
+    tracks.value.tracks.items.push(...newTracks.items);
     loading.value = false;
 }
 
-async function loadTracks(query: string): Promise<Tracks> {
-    const response = await $fetch<Response>("/api/spotify/search", {
+async function loadTracks(query: string): Promise<Root> {
+    const response = await $fetch<Root>("/api/spotify/search", {
         method: "GET",
         query: {
             q: query,
@@ -124,11 +189,11 @@ async function loadTracks(query: string): Promise<Tracks> {
         },
     });
     next.value = response.tracks.next;
-    return response.tracks
+    return response
 }
 
 async function loadNext(url: string): Promise<Tracks> {
-    const response = await $fetch<Response>('/api/spotify/next', {
+    const response = await $fetch<Root>('/api/spotify/next', {
         method: "GET",
         query: {
             url
