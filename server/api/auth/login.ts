@@ -6,6 +6,7 @@ export default defineEventHandler(async (event: H3Event) => {
     const params: Record<string, string> = {
         response_type: 'code',
         client_id: config.public.CLIENT_ID || "",
+        scope: 'user-library-read user-library-modify',
         redirect_uri: config.public.CALLBACK_URL || ""
     };
 
