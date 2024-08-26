@@ -10,16 +10,18 @@ export default defineEventHandler(async (event: H3Event): Promise<Root> => {
         query
     });
 
-    const ids = data.tracks.items.map((item) => item.id).join(",");
-    const valid = await api<boolean[]>('/me/tracks/contains', {
-        method: 'GET',
-        query: {
-            ids
-        }
-    });
+    const ids = data.tracks?.items?.map((item) => item.id).join(",");
+    if (ids) {
+        const valid = await api<boolean[]>('/me/tracks/contains', {
+            method: 'GET',
+            query: {
+                ids
+            }
+        });
 
-    for (const element in data.tracks.items) {
-        data.tracks.items[element].saved = valid[element];
+        for (const element in data?.tracks?.items) {
+            data.tracks.items[element].saved = valid[element];
+        }
     }
 
     return Promise.resolve(data);
