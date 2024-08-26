@@ -36,6 +36,7 @@ export default defineI18nConfig(() => ({
             'easter-egg': 'Easter Egg',
             waterfall: 'Waterfall',
             'empty-select': 'No data',
+            login: 'Login'
         },
         es: {
             artists: 'Artistas',
@@ -70,6 +71,7 @@ export default defineI18nConfig(() => ({
             'easter-egg': 'Easter Egg',
             waterfall: 'Catarata',
             'empty-select': 'Sin datos',
+            login: 'Iniciar Sesión',
         },
         jp: {
             artists: 'アーティスト',
@@ -104,6 +106,7 @@ export default defineI18nConfig(() => ({
             'easter-egg': 'Easter Egg',
             waterfall: '滝',
             'empty-select': 'データなし',
+            login: 'ログイン'
         }
     }
 }));

@@ -92,7 +92,7 @@ const left = [
 
 const right = [
     {
-        label: 'Login',
+        label: t('login'),
         icon: 'i-heroicons-user',
         to: '/login'
     }
