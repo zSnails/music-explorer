@@ -8,6 +8,7 @@ const route = useRoute();
 const tracks = ref<Track[]>();
 const albums = ref<Album[]>([]);
 const artist = ref<ResponseArtist>();
+const isFollowing = ref(false);
 
 interface ResponseSongs {
     tracks: Track[];
@@ -17,16 +18,16 @@ interface ResponseArtist {
     name: string;
     images: Image[];
     followers: Followers;
-};
+}
 
 interface ResponseAlbums {
     items: Album[];
-};
+}
 
 interface Followers {
     href: null;
     total: number;
-};
+}
 
 async function loadTracks(): Promise<void> {
     const response = await $fetch<ResponseSongs>(`/api/spotify/artists/${route.params.id}/top-tracks`, {
@@ -51,10 +52,46 @@ const loadAlbums = async () => {
     albums.value = response.items;
 }
 
+async function checkIfFollowing(): Promise<void> {
+    const response = await $fetch<boolean>(`/api/spotify/isFollowing/${route.params.id}`, {
+        method: "GET",
+    });
+    isFollowing.value = response[0];
+}
+
+async function followArtist(): Promise<void> {
+    try {
+        const response = await $fetch(`/api/spotify/follow/${route.params.id}`, {
+            method: "PUT",
+        });
+        if (response.success) {
+            isFollowing.value = true; 
+        } else {
+        }
+    } catch (error) {
+        console.error('Error following the artist:', error);
+    }
+}
+
+async function unfollowArtist(): Promise<void> {
+    try {
+        const response = await $fetch(`/api/spotify/unFollow/${route.params.id}`, {
+            method: "DELETE",
+        });
+        if (response.success) {
+            isFollowing.value = false;  
+        } else {
+        }
+    } catch (error) {
+        console.error('Error unfollowing the artist:', error);
+    }
+}
+
 onBeforeMount(async () => {
-    loadTracks();
-    loadArtist();
-    loadAlbums();
+    await loadTracks();
+    await loadArtist();
+    await loadAlbums();
+    await checkIfFollowing(); 
 });
 
 const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-6 w-full' } };
@@ -69,10 +106,18 @@ const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-
                     <UAvatar size="3xl" :src="artist?.images[0]?.url"></UAvatar>
                     <h1 class="text-8xl font-bold mb-4">{{ artist?.name }}</h1>
                 </div>
-                <h1 class="text-6xl font-bold font-sans">{{ new Intl.NumberFormat("en-US", {
-                    notation:
-                        "compact"
-                }).format(artist?.followers.total || 0) }} Followers</h1>
+                <div class="flex flex-col items-end">
+                    <h1 class="text-6xl font-bold font-sans">
+                        {{ new Intl.NumberFormat("en-US", { notation: "compact" }).format(artist?.followers.total || 0) }} Followers
+                    </h1>
+                    <button
+                        @click="isFollowing ? unfollowArtist() : followArtist()"
+                        class="bg-green-500 text-white font-bold py-2 px-4 rounded mt-2 hover:bg-green-600"
+                    >
+                        {{ isFollowing ? "Unfollow" : "Follow" }}
+                    </button>
+
+                </div>
             </div>
         </div>
         <div class="flex gap-5 lg:flex-row m-5 flex-col justify-between items-start">

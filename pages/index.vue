@@ -29,32 +29,13 @@
         </div>
         <div class="grid grid-cols-2 gap-2">
             <ClientOnly fallback-tag="span" fallback="Loading songs...">
-                <UCard v-for="(track, idx) in tracks?.items" :key="idx" 
-                    @click = "changeInfo(track)"
-                    class="shadow-xl hover:scale-105 hover:bg-slate-100 hover:animate-pulse min-w-[500px] max-w-[500px] h-fit max-h-[220px] min-h-[220px] w-full flex flex-col gap-6">
-                    <div class="flex flex-row justify-between">
-                        <img :src="track.album.images[0]?.url" :alt="track.album.name" width="100"
-                            class="mb-2 rounded-xl">
-                        <h1>{{ format(track.duration_ms, 'mm:ss') }}</h1>
-                    </div>
-                    <div class="flex flex-row justify-between items-baseline truncate text-ellipsis">
-                        <div class="flex flex-col">
-                            <h1 class="font-bold text-4xl">{{ track.name }}</h1>
-                            <div class="flex flex-row gap-2 overflow-hidden">
-                                <h1 v-for="(artist, idx) in track.artists" :key="idx">
-                                    <ULink :to="artist.external_urls.spotify">{{ artist.name }}</ULink>
-                                </h1>
-                            </div>
-                        </div>
-                        <UIcon class="w-8 h-8" name="i-heroicons-arrow-top-right-on-square-20-solid"></UIcon>
-                    </div>
-                </UCard>
+                <SongCard v-for="(track, idx) in tracks.tracks.items" :key="idx" :favorite="track.saved" :id="track.id"
+                    :url="track.external_urls.spotify" :image="track.album.images[0]?.url" :name="track.name"
+                    :duration_ms="track.duration_ms" :explicit="track.explicit"></SongCard>
             </ClientOnly>
         </div>
-        <UButton v-if="tracks.items.length > 0 && next !== ''" :disabled="loading" @click="loadMore"
-            class="w-fit mx-auto">Load
-            more
-        </UButton>
+        <UButton v-if="tracks.tracks.items.length > 0 && next !== ''" :disabled="loading" @click="loadMore"
+            class="w-fit mx-auto">Load more</UButton>
     </section>
     <UModal v-model="isOpen">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
@@ -107,75 +88,14 @@
 </template>
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core';
-import { format } from 'date-fns';
+import SongCard from '~/components/SongCard.vue';
 import { useStore } from '~/store/store';
+import type { Root, Tracks } from '~/search';
 
 const { query: query, fullPath: fullPath } = useRoute();
 const { push } = useRouter();
 
 const store = useStore();
-
-const isOpen = ref(false);
-const copy = async () => {
-    navigator.clipboard.writeText(url.value);
-}
-const searchSong = async (option: string, name: string) => {
-
-    if (option === 'youtube') {
-        window.open(`https://www.youtube.com/results?search_query=${name}`, '_blank');
-    } else {
-        window.open(`https://music.apple.com/search?term=${name}`, '_blank');
-    }
-
-}
-
-const name = ref<string>("");
-const url = ref<string>("");
-
-const changeInfo = (track: Song) => {
-    name.value = track.name;
-    url.value = track.external_urls.spotify;
-    isOpen.value = true;
-}
-
-
-interface ExternalUrls {
-    spotify: string;
-};
-
-interface Artist {
-    name: string;
-    href: string;
-    external_urls: ExternalUrls;
-};
-
-interface Song {
-    name: string;
-    artists: Artist[];
-    duration_ms: number;
-    external_urls: ExternalUrls;
-    album: Album;
-};
-
-interface Image {
-    height: number;
-    url: string;
-    width: number;
-};
-
-interface Album {
-    images: Image[];
-    name: string;
-};
-
-interface Tracks {
-    items: Song[];
-    next: string;
-};
-
-interface Response {
-    tracks: Tracks;
-};
 
 const search = ref<string>(decodeURIComponent(query.query as string || ""));
 const album = ref<string>(decodeURIComponent(query.album as string || ""));
@@ -232,17 +152,82 @@ if (query.q !== "") {
 }
 
 const next = ref<string>("");
-const tracks = ref<Tracks>({ items: [], next: next.value });
+
+const tracks = ref<Root>({
+    tracks: {
+        items: [],
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0
+    },
+    artists: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    albums: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    playlists: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    shows: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    episodes: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    },
+    audiobooks: {
+        href: '',
+        limit: 0,
+        next: '',
+        offset: 0,
+        previous: '',
+        total: 0,
+        items: []
+    }
+});
 
 async function loadMore() {
     loading.value = true;
     const newTracks = await loadNext(next.value);
-    tracks.value.items.push(...newTracks.items);
+    tracks.value.tracks.items.push(...newTracks.items);
     loading.value = false;
 }
 
-async function loadTracks(query: string): Promise<Tracks> {
-    const response = await $fetch<Response>("/api/spotify/search", {
+async function loadTracks(query: string): Promise<Root> {
+    const response = await $fetch<Root>("/api/spotify/search", {
         method: "GET",
         query: {
             q: query,
@@ -252,11 +237,11 @@ async function loadTracks(query: string): Promise<Tracks> {
         },
     });
     next.value = response.tracks.next;
-    return response.tracks
+    return response
 }
 
 async function loadNext(url: string): Promise<Tracks> {
-    const response = await $fetch<Response>('/api/spotify/next', {
+    const response = await $fetch<Root>('/api/spotify/next', {
         method: "GET",
         query: {
             url
