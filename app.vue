@@ -94,7 +94,7 @@ const right = [
     {
         label: 'Login',
         icon: 'i-heroicons-user',
-        to: localePath('/login')
+        to: '/login'
     }
 ];
 
