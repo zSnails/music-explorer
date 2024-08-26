@@ -2,7 +2,7 @@
 import { format } from 'date-fns';
 
 const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-6 w-full' } };
-let { id, favorite } = defineProps<{
+let { id, favorite, url } = defineProps<{
     favorite?: boolean,
     url: string,
     image?: string,
@@ -13,17 +13,9 @@ let { id, favorite } = defineProps<{
 }>();
 
 const isOpen = ref(false);
+
 const copy = async () => {
     navigator.clipboard.writeText(url);
-}
-const search = async (option:string, name:string) => {
-    
-    if(option === 'youtube'){
-        window.open(`https://www.youtube.com/results?search_query=${name}`, '_blank');
-    }else{
-        window.open(`https://music.apple.com/search?term=${name}`, '_blank');
-    }
-    
 }
 
 const fav = ref<boolean>(favorite);
@@ -50,14 +42,14 @@ const addFavorite = async () => {
 
 </script>
 <template>
-    <UCard target="_blank" :href="url" :ui="cardConfig"
+    <UCard :ui="cardConfig" @click="isOpen = true"
         class="group shadow-xl min-h-[108px] hover:scale-105 hover:bg-slate-100 hover:animate-pulse w-full h-fit flex flex-row gap-6">
         <div class="flex flex-row w-full h-full justify-between">
             <div class="flex flex-row gap-5">
                 <img :src="image" :alt="name" width="50" class="mb-2 rounded-lg">
                 <div class="flex flex-col gap-2">
                     <h1 class="font-bold text-xl">
-                        <ULink :to="url">{{ name }}</ULink>
+                        {{ name }}
                     </h1>
                     <h1 class="font-bold text-md">{{ format(duration_ms, 'mm:ss') }}</h1>
                 </div>
@@ -92,14 +84,16 @@ const addFavorite = async () => {
                             size="xs" />
                     </template>
                 </UButton>
-                <UButton label="Youtube" color="red" variant="ghost" @click="search('youtube', name)">
+                <UButton label="Youtube" color="red" variant="ghost" target="_blank"
+                    :to="`https://www.youtube.com/results?search_query=${name}`">
                     <template #leading>
                         <UAvatar
                             src="https://static.vecteezy.com/system/resources/thumbnails/023/986/480/small_2x/youtube-logo-youtube-logo-transparent-youtube-icon-transparent-free-free-png.png"
                             size="sm" />
                     </template>
                 </UButton>
-                <UButton label="Apple Music" color="pink" variant="ghost" @click="search('apple', name)">
+                <UButton label="Apple Music" color="pink" variant="ghost" target="_blank"
+                    :to="`https://music.apple.com/search?term=${name}`">
                     <template #leading>
                         <UAvatar
                             src="https://w7.pngwing.com/pngs/772/159/png-transparent-itunes-store-apple-music-apple-purple-computer-os-x-thumbnail.png"
