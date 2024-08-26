@@ -17,6 +17,7 @@
     "vue": "^3.4.38"
   },
   "devDependencies": {
+    "@nuxtjs/i18n": "^8.5.1",
     "@pinia/nuxt": "^0.5.3",
     "nuxt": "^3.12.4",
     "typescript": "^5.5.4"

@@ -5,7 +5,7 @@
             <h1 class="font-bold text-3xl">{{ user.display_name }}</h1>
         </section>
         <section class="flex flex-col gap-5">
-            <h2 class="font-bold text-8xl">Your Favorite Tracks</h2>
+            <h2 class="font-bold text-8xl">{{ $t('favorite-tracks') }}</h2>
             <div class="flex flex-col gap-2 min-w-[500px]">
                 <SongCard :key="idx" v-for="(song, idx) in favoriteSongs.data.value?.items" :id="song.track.id"
                     :url="song.track.external_urls.spotify" :image="song.track.album.images[0].url"

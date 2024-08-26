@@ -1,7 +1,7 @@
 <template>
     <section class="flex flex-row gap-10 w-full p-4">
         <div class="min-w-fit w-full">
-            <h2 class="font-bold text-3xl text-center mb-4">Trending Songs</h2>
+            <h2 class="font-bold text-3xl text-center mb-4">{{ $t('trending-songs') }}</h2>
             <ul class="flex flex-col gap-4">
                 <SongCard v-for="(item, idx) in playlist?.tracks?.items" :key="idx" :id="item.track.id"
                     :name="`${item.track.name} - ${item.track.artists[0]?.name}`" :artist="item.track.artists[0]?.name"
@@ -11,7 +11,7 @@
         </div>
 
         <div class="min-w-fit w-full">
-            <h2 class="font-bold text-3xl text-center mb-4">Trending Artists</h2>
+            <h2 class="font-bold text-3xl text-center mb-4">{{ $t('trending-artists') }}</h2>
             <ul class="flex flex-col gap-4">
                 <ArtistCard v-for="(artist, idx) in artistMap" :key="idx" :name="artist.name" :image="artist.image"
                     :url="artist.spotifyUrl" />

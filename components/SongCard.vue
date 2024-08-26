@@ -93,7 +93,7 @@ const addFavorite = async () => {
                     </template>
                 </UButton>
                 <UButton label="Apple Music" color="pink" variant="ghost" target="_blank"
-                    :to="`https://music.apple.com/search?term=${name}`">
+                    :to="`https://music.apple.com/search?term=${encodeURIComponent(name)}`">
                     <template #leading>
                         <UAvatar
                             src="https://w7.pngwing.com/pngs/772/159/png-transparent-itunes-store-apple-music-apple-purple-computer-os-x-thumbnail.png"
@@ -104,10 +104,10 @@ const addFavorite = async () => {
             </div>
 
             <template #footer>
-                <h1>Spotify link</h1>
+                <h1>{{$t('spotify-link')}}</h1>
                 <div class="flex items-center gap-2 mt-1">
                     <UInput class="flex grow" :value="url" readonly />
-                    <UButton label="Copy" @click="copy" color="blue" />
+                    <UButton :label="$t('copy')" @click="copy" color="blue" />
                 </div>
                 <Placeholder class="h-8" />
             </template>

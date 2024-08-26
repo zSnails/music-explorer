@@ -78,7 +78,7 @@ const search = async (option: string, name: string) => {
                 <h1>Spotify link</h1>
                 <div class="flex items-center gap-2 mt-1">
                     <UInput class="flex grow" :value="url" readonly />
-                    <UButton label="Copy" @click="copy" color="blue" />
+                    <UButton :label="$t('copy')" @click="copy" color="blue" />
                 </div>
                 <Placeholder class="h-8" />
             </template>

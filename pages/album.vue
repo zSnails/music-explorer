@@ -12,7 +12,7 @@
         <div class="grid grid-cols-2 gap-2">
             <ClientOnly fallback-tag="span" fallback="Loading artist...">
                 <UCard v-for="(artist, idx) in artists?.items" :key="idx" as="a" target=""
-                    :href="`/albums/${artist.id}`"
+                    :href="localePath(`/albums/${artist.id}`)"
                     class="shadow-xl hover:scale-105 hover:bg-slate-100 hover:animate-pulse min-w-[500px] max-w-[500px] h-fit max-h-[200px] w-full flex flex-col gap-6 min-h-[220px]">
                     <div class="flex flex-row justify-between">
                         <img :src="artist.images[0]?.url ?? 'https://store-images.s-microsoft.com/image/apps.10546.13571498826857201.6603a5e2-631f-4f29-9b08-f96589723808.dc893fe0-ecbc-4846-9ac6-b13886604095'"
@@ -40,6 +40,7 @@ import { useDebounceFn } from '@vueuse/core';
 const search = ref("");
 
 const artists = ref<Artists>({ items: [] });
+const localePath = useLocalePath();
 
 interface Artists {
     items: Artist[];
