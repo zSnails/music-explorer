@@ -1,10 +1,9 @@
 <script setup lang="ts">
 const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-6 w-full' } };
-const { url, image, name, rank } = defineProps<{
+const { url, image, name } = defineProps<{
     url: string,
     image?: string,
     name: string,
-    rank: number,
 }>();
 const isOpen = ref(false);
 const copy = async () => {
