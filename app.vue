@@ -7,12 +7,12 @@
                         <span class="group-hover:text-primary relative">{{ $t(link.label) }}</span>
                     </template>
                 </UHorizontalNavigation>
-                <UHorizontalNavigation class="w-fit" v-if="!isLogged" :links="right">
+                <!-- <UHorizontalNavigation class="w-fit" v-if="!isLogged" :links="right">
                     <template #default="{ link }">
                         <span class="group-hover:text-primary relative">{{ $t(link.label) }}</span>
                     </template>
-                </UHorizontalNavigation>
-                <UDropdown :items="items" v-else>
+                </UHorizontalNavigation> -->
+                <UDropdown :items="items" v-if="isLogged">
                     <div class="flex flex-row items-center gap-2">
                         {{ store.getUser().display_name }}
                         <UAvatar :src="store.getUser().images[0]?.url">
@@ -25,10 +25,13 @@
                 </UDropdown>
             </nav>
         </header>
-        <main class="mx-auto">
+        <main class="mx-auto" v-if="isLogged">
             <NuxtLoadingIndicator></NuxtLoadingIndicator>
             <NuxtPage />
         </main>
+        <div v-else class="mx-auto my-auto">
+            <UButton class="shadow-xl" size="xl" @click="login()">{{ $t('spotify-login') }}</UButton>
+        </div>
         <footer
             class="w-full min-h-[100px] flex flex-row justify-around bg-slate-100 shadow-[0_1px_3px_2px_rgba(0,0,0,0.2)]">
             <section class="flex flex-col items-start my-5">
@@ -61,6 +64,10 @@
 <script setup lang="ts">
 import { useStore } from '~/store/store';
 import Author from "~/components/Author.vue"
+
+const login = () => {
+    window.location.href = '/api/auth/login';
+};
 
 const switchLocalePath = useSwitchLocalePath();
 const store = useStore();
@@ -101,13 +108,13 @@ const left = [
     },
 ];
 
-const right = [
-    {
-        label: 'login',
-        icon: 'i-heroicons-user',
-        click: () => push({ path: localePath('/login') }),
-    }
-];
+// const right = [
+//     {
+//         label: 'login',
+//         icon: 'i-heroicons-user',
+//         click: () => push({ path: localePath('/login') }),
+//     }
+// ];
 
 function setWaterfall() {
     const element = document.querySelector('body');

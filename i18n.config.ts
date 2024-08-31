@@ -36,7 +36,8 @@ export default defineI18nConfig(() => ({
             'easter-egg': 'Easter Egg',
             waterfall: 'Waterfall',
             'empty-select': 'No data',
-            login: 'Login'
+            login: 'Login',
+            'spotify-login': 'Login With Spotify',
         },
         es: {
             artists: 'Artistas',
@@ -72,6 +73,7 @@ export default defineI18nConfig(() => ({
             waterfall: 'Catarata',
             'empty-select': 'Sin datos',
             login: 'Iniciar Sesión',
+            'spotify-login': 'Iniciar Sesión con Spotify',
         },
         jp: {
             artists: 'アーティスト',
@@ -106,7 +108,8 @@ export default defineI18nConfig(() => ({
             'easter-egg': 'Easter Egg',
             waterfall: '滝',
             'empty-select': 'データなし',
-            login: 'ログイン'
+            login: 'ログイン',
+            'spotify-login': 'Spotifyでログイン',
         }
     }
 }));
