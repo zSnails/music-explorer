@@ -2,17 +2,27 @@
     <div class="grid gap-8 min-h-[100dvh] grid-rows-[auto_1fr_auto]">
         <header class="sticky top-0 z-50">
             <nav class="flex px-5 flex-row justify-between items-center bg-slate-100 h-fit min-h-[56px] shadow">
-                <UHorizontalNavigation class="w-fit" :links="left" />
-                <ClientOnly>
-                    <UHorizontalNavigation class="w-fit" v-if="!isLogged" :links="right" />
-                    <UDropdown :items="items" v-else>
-                        <div class="flex flex-row items-center gap-2">
-                            {{ store.getUser().display_name }}
-                            <UAvatar :src="store.getUser().images[0]?.url">
-                            </UAvatar>
-                        </div>
-                    </UDropdown>
-                </ClientOnly>
+                <UHorizontalNavigation class="w-fit" :links="left">
+                    <template #default="{ link }">
+                        <span class="group-hover:text-primary relative">{{ $t(link.label) }}</span>
+                    </template>
+                </UHorizontalNavigation>
+                <UHorizontalNavigation class="w-fit" v-if="!isLogged" :links="right">
+                    <template #default="{ link }">
+                        <span class="group-hover:text-primary relative">{{ $t(link.label) }}</span>
+                    </template>
+                </UHorizontalNavigation>
+                <UDropdown :items="items" v-else>
+                    <div class="flex flex-row items-center gap-2">
+                        {{ store.getUser().display_name }}
+                        <UAvatar :src="store.getUser().images[0]?.url">
+                        </UAvatar>
+                    </div>
+                    <template #item="{ item }">
+                        <UIcon :name="item.icon" />
+                        {{ $t(item.label) }}
+                    </template>
+                </UDropdown>
             </nav>
         </header>
         <main class="mx-auto">
@@ -57,44 +67,45 @@ const store = useStore();
 let isLogged = computed(() => !!store.user);
 
 const localePath = useLocalePath();
-const { t } = useI18n();
+const { push } = useRouter();
 
 const items = [
     [{
-        label: t('profile'),
+        label: 'profile',
         icon: 'i-heroicons-user',
-        to: localePath('/me')
+        click: () => push({ path: localePath('/me') }),
     }],
     [{
-        label: t('logout'),
+        label: 'logout',
         icon: 'i-heroicons-arrow-right-start-on-rectangle',
-        to: '/logout'
+        click: () => push({ path: localePath('/logout') }),
     }],
 ];
+
 
 const left = [
     {
         label: 'Music Explorer',
         icon: 'i-heroicons-musical-note',
-        to: localePath('/')
+        click: () => push({ path: localePath('/') }),
     },
     {
-        label: t('artists'),
+        label: 'artists',
         icon: 'i-heroicons-user-group',
-        to: localePath('/artists')
+        click: () => push({ path: localePath('/artists') }),
     },
     {
-        label: t('trending'),
+        label: 'trending',
         icon: 'i-heroicons-arrow-trending-up',
-        to: localePath('/trending')
+        click: () => push({ path: localePath('/trending') }),
     },
 ];
 
 const right = [
     {
-        label: t('login'),
+        label: 'login',
         icon: 'i-heroicons-user',
-        to: '/login'
+        click: () => push({ path: localePath('/login') }),
     }
 ];
 
@@ -107,9 +118,3 @@ function setWaterfall() {
 }
 
 </script>
-<!-- <style>
-body {
-    background-image: url('/public/assets/img/background.jpg');
-    background-size: cover;
-}
-</style> -->

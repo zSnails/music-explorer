@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { format } from 'date-fns';
+import type { Artist } from '~/search';
 
 const cardConfig = { body: { base: '', background: '', padding: 'px-4 py-5 sm:p-6 w-full' } };
 let { id, favorite, url } = defineProps<{
@@ -7,6 +8,7 @@ let { id, favorite, url } = defineProps<{
     url: string,
     image?: string,
     name: string,
+    artist?: Artist,
     duration_ms: number,
     explicit: boolean,
     id: string,
@@ -40,17 +42,27 @@ const addFavorite = async () => {
     fav.value = true;
 };
 
+const localePath = useLocalePath();
+
 </script>
 <template>
-    <UCard :ui="cardConfig" @click="isOpen = true"
+    <UCard :ui="cardConfig"
         class="group shadow-xl min-h-[108px] hover:scale-105 hover:bg-slate-100 hover:animate-pulse w-full h-fit flex flex-row gap-6">
         <div class="flex flex-row w-full h-full justify-between">
             <div class="flex flex-row gap-5">
                 <img :src="image" :alt="name" width="50" class="mb-2 rounded-lg">
                 <div class="flex flex-col gap-2">
-                    <h1 class="font-bold text-xl">
-                        {{ name }}
-                    </h1>
+                    <div class="flex flex-row gap-2 items-center">
+                        <h1 class="font-bold text-xl" @click="isOpen = true">
+                            <ULink class="max-w-[15ch] truncate">
+                                {{ name }}
+                            </ULink>
+                        </h1>
+                        <h1 class="font-bold text-xl max-w-[10ch] truncate" v-if="artist">
+                            - <ULink :to="localePath(`/artists/${artist.id}`)">{{
+                                artist.name }}</ULink>
+                        </h1>
+                    </div>
                     <h1 class="font-bold text-md">{{ format(duration_ms, 'mm:ss') }}</h1>
                 </div>
             </div>
@@ -104,7 +116,7 @@ const addFavorite = async () => {
             </div>
 
             <template #footer>
-                <h1>{{$t('spotify-link')}}</h1>
+                <h1>{{ $t('spotify-link') }}</h1>
                 <div class="flex items-center gap-2 mt-1">
                     <UInput class="flex grow" :value="url" readonly />
                     <UButton :label="$t('copy')" @click="copy" color="blue" />

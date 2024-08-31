@@ -4,7 +4,7 @@
             <h2 class="font-bold text-3xl text-center mb-4">{{ $t('trending-songs') }}</h2>
             <ul class="flex flex-col gap-4">
                 <SongCard v-for="(item, idx) in playlist?.tracks?.items" :key="idx" :id="item.track.id"
-                    :name="`${item.track.name} - ${item.track.artists[0]?.name}`" :artist="item.track.artists[0]?.name"
+                    :name="`${item.track.name} - ${item.track.artists[0]?.name}`" :artist="item.track.artists[0]"
                     :url="item.track.external_urls.spotify" :image="item.track.album.images[0]?.url"
                     :duration_ms="item.track.duration_ms" :favorite="false" :explicit="item.track.explicit" />
             </ul>
