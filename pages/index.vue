@@ -23,9 +23,9 @@
                         <UInput @change="debouncedSearch" v-model="album" :placeholder="$t('album')"></UInput>
                         <USelectMenu @change="debouncedSearch" :placeholder="$t('genre')" class="min-w-[150px]"
                             v-model="genre" :options="store.genres">
-                        <template #empty>
-                            {{$t('empty-select')}}
-                        </template>
+                            <template #empty>
+                                {{ $t('empty-select') }}
+                            </template>
                         </USelectMenu>
                     </div>
                 </template>
@@ -34,8 +34,8 @@
         <div class="grid grid-cols-2 gap-2">
             <ClientOnly fallback-tag="span" :fallback="$t('loading-songs')">
                 <SongCard v-for="(track, idx) in tracks.tracks.items" :key="idx" :favorite="track.saved" :id="track.id"
-                    :url="track.external_urls.spotify" :image="track.album.images[0]?.url" :name="track.name"
-                    :duration_ms="track.duration_ms" :explicit="track.explicit"></SongCard>
+                    :artist="track.artists[0]" :url="track.external_urls.spotify" :image="track.album.images[0]?.url"
+                    :name="track.name" :duration_ms="track.duration_ms" :explicit="track.explicit"></SongCard>
             </ClientOnly>
         </div>
         <UButton v-if="tracks.tracks.items.length > 0 && next !== ''" :disabled="loading" @click="loadMore"
@@ -103,11 +103,10 @@ const debouncedSearch = useDebounceFn(async () => {
     }
 }, 500);
 
-if (query.q !== "") {
-    debouncedSearch();
-}
 
 const next = ref<string>("");
+
+
 
 const tracks = ref<Root>({
     tracks: {
@@ -174,6 +173,24 @@ const tracks = ref<Root>({
         items: []
     }
 });
+
+if (query.q !== "") {
+    debouncedSearch();
+    // const response = await useFetch<Root>("/api/spotify/search", {
+    //     method: "GET",
+    //     query: {
+    //         q: query,
+    //         type: "track",
+    //         limit: 10,
+    //         offset: 0,
+    //     },
+    // });
+
+    // if (response.data.value) {
+    //     next.value = response.data.value.tracks.next;
+    //     tracks.value = response.data.value;
+    // }
+}
 
 async function loadMore() {
     loading.value = true;
