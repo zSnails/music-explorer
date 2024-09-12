@@ -47,7 +47,7 @@ const localePath = useLocalePath();
 </script>
 <template>
     <UCard :ui="cardConfig"
-        class="group shadow-xl min-h-[108px] hover:scale-105 hover:bg-slate-100 hover:animate-pulse w-full h-fit flex flex-row gap-6">
+        class="group shadow-xl min-h-[108px] min-w-[350px] hover:scale-105 hover:bg-slate-100 hover:animate-pulse w-full h-fit flex flex-row gap-6">
         <div class="flex flex-row w-full h-full justify-between">
             <div class="flex flex-row gap-5">
                 <img :src="image" :alt="name" width="50" class="mb-2 rounded-lg">
